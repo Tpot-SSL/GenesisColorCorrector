@@ -6,33 +6,41 @@ using System.IO;
 namespace GenesisColorCorrector {
     class Program {
         // Base palette index.
-        public static byte BaseIndex = 34;
+        public static byte      BaseIndex       = 34;
+        public static bool      UseBaseIndex    = false;
+        public static byte[]    HardwareColors  = new byte[]{ 0, 52, 87, 116, 144, 172, 206, 255};
 
         public static byte NearestColor(byte color) {
             // Darkest Shade (0)
             if(color < 14)
                return 0;
+
             // (34)
-            else if(color < 50)
-               return BaseIndex;
+            if(color < 50)
+               return UseBaseIndex ? BaseIndex : HardwareColors[1];
+
             // (68)
-            else if(color < 80)
-               return (byte)(BaseIndex * 2);
+            if(color < 80)
+               return UseBaseIndex ? (byte)(BaseIndex * 2) : HardwareColors[2];
+
             // (102)
-            else if(color < 120)
-               return (byte)(BaseIndex * 3);
+            if(color < 120)
+               return UseBaseIndex ? (byte)(BaseIndex * 3) : HardwareColors[3];
+
             // (136)
-            else if(color < 150)
-               return (byte)(BaseIndex * 4);
+            if(color < 150)
+               return UseBaseIndex ? (byte)(BaseIndex * 4) : HardwareColors[4];
+
             // (170)
-            else if(color < 184)
-               return (byte)(BaseIndex * 5);
+            if(color < 184)
+               return UseBaseIndex ? (byte)(BaseIndex * 5) : HardwareColors[5];
+
             // (204)
-            else if(color < 220)
-               return (byte)(BaseIndex * 6);
+            if(color < 220)
+               return UseBaseIndex ? (byte)(BaseIndex * 6) : HardwareColors[6];
+
             // Lightest shade (238)
-            else
-               return (byte)(BaseIndex * 7);
+            return    UseBaseIndex ? (byte)(BaseIndex * 7) : HardwareColors[7];
         }
 
         static void Main(string[] args){
@@ -40,11 +48,15 @@ namespace GenesisColorCorrector {
             Directory.CreateDirectory(Environment.CurrentDirectory + "\\output\\");
 
             // Get files in current directory.
-            string[] files = Directory.GetFiles(Environment.CurrentDirectory);
+            string[] files = args.Length == 0 ? Directory.GetFiles(Environment.CurrentDirectory) : args;
             
             // Cycle through files.
             for(int index = 0; index < files.Length; index++) {
                 string file = files[index];
+
+                // Continue is file doesn't exist.
+                if(!File.Exists(file))
+                    continue;
 
                 // If file isn't an image, skip it.
                 if(Path.GetExtension(file) != ".png" && Path.GetExtension(file) != ".bmp" && Path.GetExtension(file) != ".gif")
@@ -56,7 +68,6 @@ namespace GenesisColorCorrector {
                 // Set up for modifying pixels.
                 BitmapData  pixelData   = image.LockBits(new Rectangle(new Point(0, 0), image.Size), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 
-                
                 unsafe {
                     byte* srcPointer = (byte*)pixelData.Scan0;
 

@@ -1,1 +1,1 @@
-# GenesisColorCorrecter
+# GenesisColorCorrector
