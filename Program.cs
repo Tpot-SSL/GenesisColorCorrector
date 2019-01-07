@@ -59,7 +59,7 @@ namespace GenesisColorCorrector {
                     continue;
 
                 // If file isn't an image, skip it.
-                if(Path.GetExtension(file) != ".png" && Path.GetExtension(file) != ".bmp" && Path.GetExtension(file) != ".gif")
+                if(Path.GetExtension(file) != ".png" && Path.GetExtension(file) != ".bmp" && Path.GetExtension(file) != ".gif" && Path.GetExtension(file) != ".jpg" && Path.GetExtension(file) != ".jpeg")
                     continue;
 
                 // Load image
